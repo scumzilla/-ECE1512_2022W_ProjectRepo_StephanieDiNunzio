@@ -1,0 +1,3 @@
+cd /D D:\Github Repos\ECE1512\-ECE1512_2022W_ProjectRepo_StephanieDiNunzio\Project A\Project_A_Supp\logs
+
+tensorboard dev upload --logdir logs
