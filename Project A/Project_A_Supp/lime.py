@@ -35,7 +35,6 @@ def perturb_img(img, perturb, segs):
 def LIME_img(img, model, label, num_perturb=300, kernel_w=0.25, num_feats=10):
     superpixels = skimage.segmentation.quickshift(img, kernel_size=4,max_dist=200, ratio=0.2)
     num_superpixels = np.unique(superpixels).shape[0]
-    skimage.io.imshow(skimage.segmentation.mark_boundaries(img, superpixels))
     perturbs = np.random.binomial(1, 0.5, size=(num_perturb, num_superpixels))
     preds = []
     for i in perturbs:
@@ -47,12 +46,13 @@ def LIME_img(img, model, label, num_perturb=300, kernel_w=0.25, num_feats=10):
     dists = sklearn.metrics.pairwise_distances(perturbs, orig_img, metric='cosine').ravel()
     weights = np.sqrt(np.exp(-(dists**2)/kernel_w**2))
     lime_model = LinearRegression()
-    lime_model.fit(x=perturbs, y=preds[:,:,label], sample_weight=weights)
+    lime_model.fit(perturbs, preds[:,:,label], weights)
     c = lime_model.coef_[0]
     top_feats = np.argsort(c)[-num_feats:]
     mask = np.zeros(num_superpixels) 
     mask[top_feats]= True 
-    skimage.io.imshow(perturb_img(img,mask,superpixels) )
+    perturbed_img = perturb_img(img,mask,superpixels)
+    return perturbed_img
 
 def LIME_1d(img, model, label, num_perturb=300, sec_size=4, kernel_w=0.25, num_feats=4):
     num_superpixels = math.ceil(img.shape[1]/sec_size)
