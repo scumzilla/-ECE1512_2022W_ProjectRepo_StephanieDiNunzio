@@ -1,3 +1,5 @@
+MACOSX folder is not used
+
 The code for the MNIST1D dataset is in the file MNIST1D copy.ipynb
 
 The LIME method is in the file lime.py
