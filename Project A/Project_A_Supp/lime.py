@@ -32,8 +32,8 @@ def perturb_img(img, perturb, segs):
     return perturbed_img
 
 
-def LIME_img(img, model, label, num_perturb=300, kernel_w=0.25, num_feats=10):
-    superpixels = skimage.segmentation.quickshift(img, kernel_size=4,max_dist=200, ratio=0.2)
+def LIME_img(img, model, label, num_perturb=300, kernel_size=4,max_dist=200, ratio=0.2, kernel_w=0.25, num_feats=10):
+    superpixels = skimage.segmentation.quickshift(img, kernel_size=kernel_size,max_dist=max_dist, ratio=ratio)
     num_superpixels = np.unique(superpixels).shape[0]
     perturbs = np.random.binomial(1, 0.5, size=(num_perturb, num_superpixels))
     preds = []
@@ -55,6 +55,9 @@ def LIME_img(img, model, label, num_perturb=300, kernel_w=0.25, num_feats=10):
     return perturbed_img
 
 def LIME_1d(img, model, label, num_perturb=300, sec_size=4, kernel_w=0.25, num_feats=4):
+    #sec_size = size of superpixels is chosen as an input
+    #num_feats = number of superpixels to output as explanation
+    
     num_superpixels = math.ceil(img.shape[1]/sec_size)
     perturbs = np.random.binomial(1, 0.5, size=(num_perturb, num_superpixels))
     preds = []
